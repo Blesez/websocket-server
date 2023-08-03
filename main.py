@@ -10,16 +10,21 @@ socketio = SocketIO(app)
 
 
 def generate_unique_id(length):
-    return str(uuid4()) #generate a uniqnpue identifyer for each connection
+    return str(uuid4()) #generate a unique identifyer for each connection
    
 if __name__ == "__main__":
-    socketio.run(app,debug = True)
+    socketio.run(app,debug = False)
 
 #Websocket connect
 @socketio.on('connect')
 def handle_connect():
     token = request.args.get('token') #get token from url to ientify user as HW or app
-    session[token] = request.sid # map the token of the HW/app to its connection id for asy access later
+    if token == 'Hardware':
+        session['Hardware'] = request.sid
+    elif token == 'app':
+        session['app'] = request.sid
+    else: print('error!!!unknown connection')
+        # map the token of the HW/app to its connection id for asy access later
    
 #Websocket disconnect
 @socketio.on('disconnect')
@@ -56,12 +61,12 @@ def handle_message(msg):
         msgTank = data['TankState']
         msgT2 = data['Tank_index']
         
-        session ['Tank ' + msgT2 + ' size'] = {msgTank}
+        session ['Tank ' + msgT2 + ' size'] = msgTank
     
     elif 'Tank_index' in data:
         tankIndex = data['Tank_index']
         tankState = data['TankState']
-        session['Tank' + tankIndex + 'state'] = {tankState}
+        session['Tank ' + tankIndex + ' state'] = tankState
 #update from hardware
     elif 'Data' in data:
         msg1 = data['Data']
@@ -88,9 +93,10 @@ def handle_sendToApp():
     height = tankSizes.get('height')
     width = tankSizes.get('width')
     length = tankSizes.get('length')
-    Tank1dist = session.get('Tank1')
-    Tank2dist = session.get('Tank2')
-    PumpState = session.get('pumpStatus')
+    hardwareData = session.get('HardwareData')
+    Tank1dist = hardwareData.get('Tank1')
+    Tank2dist = hardwareData.get('Tank2')
+    PumpState = hardwareData.get('pumpStatus')
     
      #calculate volume
     if width == 0:
@@ -126,13 +132,13 @@ def handle_sendToTank():
     connApp = session.get('app')
     pump_control = session.get('PumpState')
     #get height of each tank. Add more for more tanks
-    tank1Sizes = session.get('Tank1dimension')
+    tank1Sizes = session.get('Tank 1 dimension')
     solenoidAsize = tank1Sizes.get('height')
-    tank2Sizes = session.get('Tank2dimension')
+    tank2Sizes = session.get('Tank 2 dimension')
     solenoidBsize = tank2Sizes.get('height')
     #fetch ON/OFF instructon for tanks. Addd more for more tanks
-    solenoidA = session.get('Tank1state')
-    solenoidB = session.get('Tank2state')
+    solenoidA = session.get('Tank 1 state')
+    solenoidB = session.get('Tank 2 state')
     
     val = {
         'pump_control': pump_control,
