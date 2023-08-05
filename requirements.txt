@@ -1,2 +1,2 @@
-Flask==2.3.2
+Flask==2.2.5
 flask-socketio==5.3.4
