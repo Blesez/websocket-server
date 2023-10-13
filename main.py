@@ -35,8 +35,8 @@ def handle_connect():
     token = request.args.get('token') #get token from url to ientify user as HW or app
     if token == 'Hardware':
         session['Hardware'] = request.sid
-    elif token == 'app':
-        session['app'] = request.sid
+    elif token == 'App':
+        session['App'] = request.sid
     else: print('Error!!!unknown connection')
         # map the token of the HW/app to its connection id for asy access later
    
