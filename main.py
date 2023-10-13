@@ -74,7 +74,7 @@ def handle_message(msg):
 #update from hardware
     elif 'Data' in data:
         msg1 = data['Data']
-        PumpStatus = msg1['Pump Status']
+        PumpStatus = msg1['PumpStatus']
         Tank1 = msg1['Tank1']
         Tank2 = msg1['Tank2']
     
@@ -99,8 +99,8 @@ def handle_sendToApp():
                
     val = [volume[0],volume[1]]
             
-
-    emit('message', data_variables["PumpState"], room = connApp)
+    pump_state = data_variables["PumpState"]
+    emit('message', pump_state, room = connApp)
     emit('message', val, room = connApp) 
 
 #send to tank
