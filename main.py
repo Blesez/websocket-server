@@ -37,7 +37,7 @@ def handle_connect():
         session['Hardware'] = request.sid
     elif token == 'App':
         session['App'] = request.sid
-    else: print('Error!!!unknown connection')
+    else: print('Error!!!unknown connection ' + token)
         # map the token of the HW/app to its connection id for asy access later
    
 #Websocket disconnect
